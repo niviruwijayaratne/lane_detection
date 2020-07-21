@@ -17,7 +17,7 @@ def create_frames(video_path, images_path):
         cv2.imwrite(name, frame)
 
         frame_curr += 1
-        if frame_curr >= 400:
+        if frame_curr >= 5:
             break
     vid.release()
     return frame_curr, images_path

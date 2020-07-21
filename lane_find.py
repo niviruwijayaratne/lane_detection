@@ -4,8 +4,8 @@ import numpy as np
 import glob
 from moviepy.editor import VideoFileClip
 from vid_manipulation import create_frames, create_vid 
+from detect import detect
 # from IPython.display import HTML
-
 
 
 files = glob.glob('camera_cal/calibration*.jpg')
@@ -248,14 +248,17 @@ def pipeline(vid_path, image_path):
     for i in range(len(fnames)):
         filename = image_path + '/' + str(i) + '.jpg'
         print('doing operations on' + filename)
-        tested_image = cv2.imread(filename)
+        # tested_image = cv2.imread(filename)
+        tested_image = detect(filename)
         undistorted_image = undistort(tested_image)
         thresholded_image = threshold(undistorted_image)
 
         thresh_small = np.dstack((thresholded_image,thresholded_image,thresholded_image))*255
         # s = np.array([[317, 527], [593, 335], [745, 334] , [1094, 531]], np.float32)
         # d = np.array([[400, 720], [400, 0], [1000, 0],[1000, 720]], np.float32)
-        warped_image = warp(thresholded_image)
+        src_points = np.array([[285, 560], [595, 334], [733, 327], [1111, 540]], np.float32)
+        dst_points = np.array([[300, 720], [300, 0], [940, 0],[940, 720]], np.float32)
+        warped_image = warp(thresholded_image, src=src_points, dst=dst_points)
         warped_small = np.dstack((warped_image,warped_image,warped_image))*255
         if index == 0:
             lane_fits = first_fit(warped_image)
@@ -274,8 +277,8 @@ def pipeline(vid_path, image_path):
         cv2.fillPoly(color_warp2, np.int_(searched[8]), (0,0,255))
         cv2.fillPoly(color_warp2, np.int_(searched[9]), (255,0,0))
         cv2.fillPoly(color_warp, np.int_([bounds]), (0,255, 0))
-        src_points = np.array([[210, 720], [610, 450], [720, 458] , [1125, 720]], np.float32)
-        dst_points = np.array([[300, 720], [300, 0], [940, 0],[940, 720]], np.float32)
+        # src_points = np.array([[285, 560], [595, 334], [733, 327], [1111, 540]], np.float32)
+        # dst_points = np.array([[300, 720], [300, 0], [940, 0],[940, 720]], np.float32)
         
         
         persp_transform_mat_inv = cv2.getPerspectiveTransform(dst_points, src_points)
@@ -311,9 +314,9 @@ def pipeline(vid_path, image_path):
 
         cv2.imwrite(image_path + '/' + str(i) + '.jpg', result2)
     
-    return create_vid(frame_curr, 'final.mp4', image_path)
+    return create_vid(frame_curr, '../final.mp4', image_path)
 
-pipeline('4-Code/project_video.mp4', '4-Code/project_frames')
+pipeline('../720real.mp4', '../vid_frames')
 
 
 # tested_image = cv2.imread('test_images/test2.jpg')
