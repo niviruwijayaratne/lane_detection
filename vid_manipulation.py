@@ -11,13 +11,13 @@ def create_frames(video_path, images_path):
     frame_curr = 0
     while(True):
         ret, frame = vid.read()
-
-        name = images_path + '/' + str(frame_curr) + '.jpg'
+        name = os.path.join(images_path, str(frame_curr) + ".jpg")
+        # name = images_path + '/' + str(frame_curr) + '.jpg'
         print("Creating " + name)
         cv2.imwrite(name, frame)
 
         frame_curr += 1
-        if frame_curr >= 5:
+        if frame_curr >= 400:
             break
     vid.release()
     return frame_curr, images_path
@@ -32,9 +32,10 @@ def create_vid(num_frames, video_path, images_path):
 
     fnames = sorted(fnames)
     for file in fnames:
-        file = images_path + '/' + str(file) + '.jpg'
-        print(file)
-        img = cv2.imread(file)
+        filename = os.path.join(images_path, str(file) + ".jpg")
+        # file = images_path + '/' + str(file) + '.jpg'
+        print(filename)
+        img = cv2.imread(filename)
         height, width, layers = img.shape
         size = (width,height)
         img_array.append(img) 

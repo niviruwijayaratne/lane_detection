@@ -3,9 +3,8 @@ import cv2
 import numpy as np
 import glob
 from moviepy.editor import VideoFileClip
-from vid_manipulation import create_frames, create_vid 
-from detect import detect
-# from IPython.display import HTML
+from vid_manipulation import create_frames, create_vid
+import os
 
 
 files = glob.glob('camera_cal/calibration*.jpg')
@@ -187,12 +186,6 @@ def search(image, left_fit, right_fit):
                             ploty])))])
     right_line = np.hstack((lower_right, upper_right))
 
-    
-    
-    
-    # left_lane_lower = 
-
-
     average_left = np.array([np.transpose(np.vstack([left_fitx+6, ploty]))])
     average_right = np.array([np.flipud(np.transpose(np.vstack([right_fitx-6, ploty])))])
 
@@ -239,17 +232,17 @@ def calc_curverad(image, left_fit, right_fit):
 
 
 
-def pipeline(vid_path, image_path):
+def pipeline(vid_path, image_path, final_path):
     frame_curr, image_path = create_frames(vid_path, image_path)
-    fnames = glob.glob(image_path + '/*.jpg')
+    fnames_path = os.path.join(image_path, "*.jpg")
+    fnames = glob.glob(fnames_path)
     index = 0
     left_fit = None
     right_fit = None
     for i in range(len(fnames)):
-        filename = image_path + '/' + str(i) + '.jpg'
+        filename = os.path.join(image_path, str(i) + ".jpg")
         print('doing operations on' + filename)
-        # tested_image = cv2.imread(filename)
-        tested_image = detect(filename)
+        tested_image = cv2.imread(filename)
         undistorted_image = undistort(tested_image)
         thresholded_image = threshold(undistorted_image)
 
@@ -277,9 +270,6 @@ def pipeline(vid_path, image_path):
         cv2.fillPoly(color_warp2, np.int_(searched[8]), (0,0,255))
         cv2.fillPoly(color_warp2, np.int_(searched[9]), (255,0,0))
         cv2.fillPoly(color_warp, np.int_([bounds]), (0,255, 0))
-        # src_points = np.array([[285, 560], [595, 334], [733, 327], [1111, 540]], np.float32)
-        # dst_points = np.array([[300, 720], [300, 0], [940, 0],[940, 720]], np.float32)
-        
         
         persp_transform_mat_inv = cv2.getPerspectiveTransform(dst_points, src_points)
         # Warp the blank back to original image space using inverse perspective matrix (Minv)
@@ -312,11 +302,17 @@ def pipeline(vid_path, image_path):
         result2 = cv2.putText(result2, text3, (130 + s_img.shape[1] + s_img2.shape[1] + s_img3.shape[1], 150), cv2.FONT_HERSHEY_SIMPLEX,  
                         0.85, (255, 255, 255) , 2, cv2.LINE_AA) 
 
-        cv2.imwrite(image_path + '/' + str(i) + '.jpg', result2)
+        write_path = os.path.join(image_path, str(i) + ".jpg")
+        cv2.imwrite(write_path, result2)
     
-    return create_vid(frame_curr, '../final.mp4', image_path)
+    return create_vid(frame_curr, final_path, image_path)
 
-pipeline('../720real.mp4', '../vid_frames')
+base_path = os.path.join("/Users", "niviru", "Desktop", "Extra_Work")
+
+vid_path = os.path.join(base_path, "720real.mp4")
+image_path = os.path.join(base_path, "vid_frames")
+final_path = os.path.join(base_path, "final2.mp4")
+pipeline(vid_path, image_path, final_path)
 
 
 # tested_image = cv2.imread('test_images/test2.jpg')
