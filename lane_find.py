@@ -7,7 +7,7 @@ from vid_manipulation import create_frames, create_vid
 import os
 
 
-files = glob.glob('camera_cal/calibration*.jpg')
+files = glob.glob('assets/camera_cal/calibration*.jpg')
 image_points = []
 mapped_points = []
 grid = np.zeros((54, 3), np.float32)
