@@ -7,6 +7,7 @@ This project was a deep dive into Autonomous Driving and its computer vision app
 <br>
 
 ## TO-DO
-- Implement YOLO for car detection
-- Make more robust for lane changes and passing cars
-- Instead of YOLO potentially implement some segmentation model
+- Look into semantic segmentation models (want to optimize inference time)
+- Make lane detection algorithm more robust for lane changes/passing cars/more crowded scenes
+- Potentially implement Mask R-CNN as opposed to semantic segmentation models
+
