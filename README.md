@@ -7,7 +7,7 @@ This project was a deep dive into Autonomous Driving and its computer vision app
 <br>
 
 ## TO-DO
-- Look into semantic segmentation models (want to optimize inference time)
+- Finish building models
 - Make lane detection algorithm more robust for lane changes/passing cars/more crowded scenes
-- Potentially implement Mask R-CNN as opposed to semantic segmentation models
+- Look into real time estimation of parameters for perspective transformation (is this adjustment even neccesarsy or is this just a hyperparameters that can be tuned and will stay constant???)
 
